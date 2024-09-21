@@ -8,8 +8,9 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 const blurhash =
 	"|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const ChatItem = ({ item }) => {
+const ChatItem = ({ item, isPressDisabled, setIsPressDisabled }) => {
 	const [userId, setUserId] = useState(null);
+	const [itemPressDisabled, setItemPressDisabled] = useState(false); // Individual press control
 	const navigation = useNavigation();
 
 	useEffect(() => {
@@ -21,28 +22,35 @@ const ChatItem = ({ item }) => {
 	}, []);
 
 	const handlePress = () => {
+		if (itemPressDisabled || isPressDisabled) return;
+
+		setIsPressDisabled(true);  // Disabling global press
+		setItemPressDisabled(true);  // Disabling individual press
+
+		// Navigate to the other user's profile
 		if (userId && item.participants.user1.userId === userId) {
 			const id = item.participants.user2.userId;
 			const username = item.participants.user2.username;
-			navigation.push(`others/[id]`, {
-				id,
-				username
-			});
+			navigation.push(`chat/[id]`, { id, username });
 		} else {
 			const username = item.participants.user1.username;
 			const id = item.participants.user1.userId;
-			navigation.push(`others/[id]`, {
-				id,
-				username
-			});
+			navigation.push(`chat/[id]`, { id, username });
 		}
+
+		// Timeout for re-enabling both presses after 2 seconds
+		setTimeout(() => {
+			setIsPressDisabled(false);
+			setItemPressDisabled(false); // Re-enable individual item press
+		}, 2000);
 	};
 
 	return (
 		<TouchableOpacity
 			onPress={handlePress}
+			disabled={itemPressDisabled || isPressDisabled} 
 			className="h-[8vh] my-[0.35vh] flex-row items-center">
-			<View className="w-[5.5vh] h-[5.5vh] rounded-full overflow-hidden mx-3 ">
+			<View className="w-[5.5vh] h-[5.5vh] rounded-full overflow-hidden mx-3">
 				<Image
 					className="w-full h-full"
 					source={require("../../assets/images/default-avatar.jpg")}

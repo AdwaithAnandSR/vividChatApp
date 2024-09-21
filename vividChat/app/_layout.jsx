@@ -15,7 +15,8 @@ export default function RootLayout() {
 						<Stack.Screen name="(auth)" />
 						<Stack.Screen name="(tabs)" />
 						<Stack.Screen name="others/AllUsers" />
-						<Stack.Screen name="others/[id]" />
+						<Stack.Screen name="settings" />
+						<Stack.Screen name="chat/[id]" />
 					</Stack>
 				</AllUsersProvider>
 			</ChatProvider>

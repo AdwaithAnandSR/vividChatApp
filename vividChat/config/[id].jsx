@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import debounce from "lodash/debounce";
 
 import Navbar from "../../components/chat/Navbar.jsx";
 import Bottom from "../../components/chat/Bottom.jsx";
@@ -12,7 +13,8 @@ import List from "../../components/chat/List.jsx";
 import generateChatId from "../../utils/generateChatId.js";
 import useGetMessages from "../../hooks/chat/useGetMessages.js";
 import useReceiveMessage from "../../hooks/chat/useReceiveMessage.js";
-import useSendReadMessages from "../../hooks/chat/useSendReadMessages.js";
+import useReadMessages from "../../hooks/chat/useReadMessages.js";
+
 
 const FETCH_LIMIT = 25;
 const Chat = () => {
@@ -27,8 +29,10 @@ const Chat = () => {
 
 	useEffect(() => {
 		const handleFetch = async () => {
-			id = await AsyncStorage.getItem("userId");
-			name = await AsyncStorage.getItem("username");
+			const [id, name] = await Promise.all([
+				AsyncStorage.getItem("userId"),
+				AsyncStorage.getItem("username")
+			]);
 			setUserId(id);
 			setUsername(name);
 		};
@@ -44,6 +48,8 @@ const Chat = () => {
 		handleFetch();
 	}, [chatPartnerId, userId]);
 
+	
+
 	const { loading: chatLoading } = useGetMessages({
 		chatId,
 		page,
@@ -54,13 +60,16 @@ const Chat = () => {
 
 	useReceiveMessage({ chatId, setMessages });
 
-	useSendReadMessages({ chatId, setMessages, userId, chatPartnerId });
+	useReadMessages({ chatId, setMessages, userId, chatPartnerId });
 
-	const onLoadMore = useCallback(() => {
-		if (hasMore) {
-			setPage(prev => prev + 1);
-		}
-	}, [hasMore]);
+	const onLoadMore = useCallback(
+		debounce(() => {
+			if (hasMore) {
+				setPage(prev => prev + 1);
+			}
+		}, 500),
+		[hasMore]
+	);
 
 	return (
 		<SafeAreaView className="w-full h-full bg-zinc-950">

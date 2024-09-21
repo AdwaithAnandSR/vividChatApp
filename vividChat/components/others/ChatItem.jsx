@@ -16,7 +16,7 @@ const ChatItem = ({ item }) => {
 		const username = item.username;
 
 		if (id && username) {
-			navigation.push(`others/[id]`, {
+			navigation.push(`chat/[id]`, {
 				id,
 				username,
 			});

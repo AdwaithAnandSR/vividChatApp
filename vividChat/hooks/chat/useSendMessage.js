@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../contexts/socketContext.js";
 
 import { ChatContext } from "../../contexts/chatListContext.js";
+import { saveMessagesToCache } from '../../utils/cache.js';
 
 const handleChatList = ({ setChatList, chatList, chatRes, chatId }) => {
 	setChatList(prev=>{
@@ -63,8 +64,7 @@ const useSendMessage = ({
 		};
 
 		// here the chat object content two objects sender and receiver (for sending both username and id to the server), but in out app the sender and receiver is not objects, its just userid's. so that the bellow setMessages contains an expression, not chat variable.
-		setMessages(prev => [
-			{
+		const newData={
 				chatId,
 				_id: tempId,
 				message: parseMessage,
@@ -73,9 +73,15 @@ const useSendMessage = ({
 				tempId,
 				status: "sent",
 				createdAt: Date.now()
-			},
+			}
+		   
+		
+		setMessages(prev => [
+         newData,
 			...prev
 		]);
+		
+		saveMessagesToCache(chatId, [newData])
 
 		const handleResponse = ({ chatRes, id }) => {
 			setMessages(prev => {

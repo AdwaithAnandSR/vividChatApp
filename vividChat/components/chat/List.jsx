@@ -1,32 +1,40 @@
-import React, { useCallback } from "react";
-import { View, FlatList, Text } from "react-native";
-
+import React, { memo, useCallback } from "react";
+import { FlatList, Text } from "react-native";
 import RenderItem from "./RenderItem.jsx";
 
 const List = ({ data, onLoadMore, userId, chatLoading, hasMore }) => {
+	const renderItem = useCallback(
+		({ item }) => <RenderItem userId={userId} item={item} />,
+		[userId]
+	);
+
+	const handleLoadMore = useCallback(() => {
+		if (!chatLoading && hasMore) {
+			onLoadMore();
+		}
+	}, [chatLoading, hasMore, onLoadMore]);
+
 	const renderFooter = useCallback(() => {
-		if (!chatLoading && !hasMore) {
-			return (
-				<Text className="text-zinc-300 mt-2 text-center">no more chats.</Text>
-			);
+		if (!hasMore && !chatLoading) {
+			return <Text className="text-white mt-2 text-center">no more chats.</Text>;
 		}
 		return null;
-	}, [chatLoading, hasMore]);
+	}, [hasMore, chatLoading]);
+
 	return (
 		<FlatList
 			data={data}
-			renderItem={({ item }) => <RenderItem userId={userId} item={item} />}
+			renderItem={renderItem}
 			keyExtractor={item => item._id}
-			onEndReached={() => {
-				onLoadMore();
-			}}
-			onEndReachedThreshold={2}
-			initialNumToRender={10}
-			scrollEventThrottle={20}
+			onEndReached={handleLoadMore}
+			onEndReachedThreshold={0.5}
 			ListFooterComponent={renderFooter}
+			initialNumToRender={10}
+			maxToRenderPerBatch={10}
+			windowSize={7}
 			inverted
 		/>
 	);
 };
 
-export default List;
+export default memo(List);
