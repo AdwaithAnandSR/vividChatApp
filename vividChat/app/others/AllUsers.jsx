@@ -46,7 +46,7 @@ const AllUsers = memo(() => {
 			{loading ? (
 				<Text className="text-white text-center">Loading...</Text>
 			) : (
-				<AllUsersList allUsers={allUsers} itemHeight={itemHeight} />
+				<AllUsersList allUsers={allUsers} userId={userId} itemHeight={itemHeight} />
 			)}
 		</SafeAreaView>
 	);

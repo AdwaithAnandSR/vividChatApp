@@ -8,15 +8,11 @@ const List = ({ data, onLoadMore, userId, chatLoading, hasMore }) => {
 		[userId]
 	);
 
-	const handleLoadMore = useCallback(() => {
-		if (!chatLoading && hasMore) {
-			onLoadMore();
-		}
-	}, [chatLoading, hasMore, onLoadMore]);
-
 	const renderFooter = useCallback(() => {
 		if (!hasMore && !chatLoading) {
-			return <Text className="text-white mt-2 text-center">no more chats.</Text>;
+			return (
+				<Text className="text-white mt-2 text-center">no more chats.</Text>
+			);
 		}
 		return null;
 	}, [hasMore, chatLoading]);
@@ -26,12 +22,13 @@ const List = ({ data, onLoadMore, userId, chatLoading, hasMore }) => {
 			data={data}
 			renderItem={renderItem}
 			keyExtractor={item => item._id}
-			onEndReached={handleLoadMore}
+			onEndReached={onLoadMore}
 			onEndReachedThreshold={0.5}
 			ListFooterComponent={renderFooter}
+			removeClippedSubviews={true}
 			initialNumToRender={10}
-			maxToRenderPerBatch={10}
-			windowSize={7}
+			maxToRenderPerBatch={15}
+			windowSize={15}
 			inverted
 		/>
 	);

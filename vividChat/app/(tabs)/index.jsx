@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 import Navbar from "../../components/home/Navbar.jsx";
@@ -11,11 +12,24 @@ import ChatList from "../../components/home/ChatList.jsx";
 import { ChatContext } from "../../contexts/chatListContext.js";
 import useGetChatList from "../../hooks/home/useGetChatList.js";
 import useReceiveMessage from '../../hooks/home/useReceiveMessage.js';
+import useReadMessages from "../../hooks/home/useReadMessages.js";
 
 const Chat = () => {
 	const { chatList, setChatList } = useContext(ChatContext);
+	const [userId, setUserId] = useState(null)
+	
 	const { loading } = useGetChatList({ setChatList });
-   useReceiveMessage();
+   
+   useEffect(() => {
+     const handleFetch = async ()=>{
+         const id = await AsyncStorage.getItem('userId')
+         setUserId(id)
+     }
+     handleFetch()
+   }, [])
+   
+   useReadMessages({ userId, setChatList });
+   useReceiveMessage()
    
 	return (
 		<SafeAreaView className="flex-1 bg-zinc-950">

@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from "react";
+
 import { SocketContext } from "../../contexts/socketContext.js";
 import { ChatContext } from "../../contexts/chatListContext.js";
 
@@ -18,9 +19,8 @@ const useReadMessages = ({ chatId, setMessages, userId, chatPartnerId }) => {
 			return;
 		}
 
-		const handleResponse = resChatId => {
+		const handleResponse = async resChatId => {
 			if (resChatId !== chatId) return;
-
 			setMessages(prev => {
 				const hasChanges = prev?.some(
 					chat => chat.sender === userId && chat.status !== "read"

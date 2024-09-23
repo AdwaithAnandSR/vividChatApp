@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -16,7 +16,7 @@ const Bottom = ({ chatId, userId, chatPartnerId, setMessages, chatPartnerUsernam
 		setMessage("");
 	};
 	return (
-		<View className="fixed w-full min-h-[8vh] max-h-[11vh] flex-row justify-between items-center px-1">
+		<View   className="bg-[#09090bcc] fixed w-full min-h-[8vh] max-h-[11vh] flex-row justify-between items-center px-1">
 			<TextInput
 				multiline={true}
 				value={message}
@@ -35,4 +35,4 @@ const Bottom = ({ chatId, userId, chatPartnerId, setMessages, chatPartnerUsernam
 	);
 };
 
-export default Bottom;
+export default memo(Bottom);

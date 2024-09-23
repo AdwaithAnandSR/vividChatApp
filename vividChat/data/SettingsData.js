@@ -10,11 +10,11 @@ export const settingsList = [
 	},
 	{
 		key: 3,
-		title: "About"
+		title: "Chat"
 	},
 	{
 		key: 4,
-		title: "ABOUT"
+		title: "About"
 	},
 	
 ];

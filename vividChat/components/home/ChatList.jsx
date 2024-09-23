@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 

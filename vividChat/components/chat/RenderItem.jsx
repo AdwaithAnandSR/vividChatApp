@@ -1,10 +1,14 @@
 import React, { memo, useMemo, useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-
 import formateTime from "../../utils/formateTime.js";
 
 const RenderItem = ({ item, userId }) => {
+	const formattedTime = useMemo(
+		() => formateTime(item.createdAt),
+		[item.createdAt]
+	);
+
 	const containerStyle = useMemo(
 		() => ({
 			alignSelf: item.sender === userId ? "flex-end" : "flex-start"
@@ -45,7 +49,7 @@ const RenderItem = ({ item, userId }) => {
 				<Text className="text-white">{item.message}</Text>
 				<View className="self-end mt-2 flex-row items-center">
 					<Text className="text-white text-[3vw] font-semibold opacity-[0.85] mx-1">
-						{formateTime(item.createdAt)}
+						{formattedTime}
 					</Text>
 					{renderStatusIcon()}
 				</View>
@@ -54,9 +58,4 @@ const RenderItem = ({ item, userId }) => {
 	);
 };
 
-export default memo(
-	RenderItem,
-	(prevProps, nextProps) =>
-		prevProps.item._id === nextProps.item._id &&
-		prevProps.item.status === nextProps.item.status 
-);
+export default memo(RenderItem);

@@ -1,48 +1,116 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import React, { useState, useEffect, useRef, memo } from "react";
+import {
+	View,
+	Text,
+	TouchableOpacity,
+	Pressable,
+	TextInput,
+	Modal
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Navbar from "../../components/settings/Navbar.jsx";
 import ProfileDp from "../../components/settings/Profile_dp.jsx";
+import ConfirmMessage from "../../components/settings/ConfirmMessage.jsx";
+import ProfileEditableItem from "../../components/settings/ProfileEditableItem.jsx";
+
+import useUpdateProfile from "../../hooks/settings/useUpdateProfile.js";
+
+const conformMessage = "Are you sure to update ?";
 
 const Profile = () => {
 	const [username, setUsername] = useState(null);
-	usernameRef = useRef(null);
+	const [userId, setUserId] = useState(null);
+	const [about, setAbout] = useState(null);
+	const [newName, setNewName] = useState(null);
+	const [newAbout, setNewAbout] = useState(null);
+	const [UsernameEditable, setUsernameEditable] = useState(false);
+	const [isAboutEditable, setIsAboutEditable] = useState(false);
+	const [isConfirmShow, setIsConfirmShow] = useState(false);
+	const [conformUpdateUsername, setConformUpdateUsername] = useState(false);
+
+	useUpdateProfile({
+		userId,
+		newName,
+		newAbout,
+		conformUpdateUsername,
+		setConformUpdateUsername,
+		username,
+		setNewName
+	});
 
 	useEffect(() => {
 		const handleFetch = async () => {
 			const storedUsername = await AsyncStorage.getItem("username");
+			const id = await AsyncStorage.getItem("userId");
+			const storedAbout = await AsyncStorage.getItem("about");
 			setUsername(storedUsername);
+			setAbout(storedAbout);
+			setUserId(id);
 		};
-
 		handleFetch();
 	}, []);
-	
-	const handleUserNameEdit = ()=>{
-	   
-	}
+
+	const handleUsernameEdit = () => {
+		setNewAbout(null);
+		setIsAboutEditable(false);
+		setUsernameEditable(prev => {
+			prev ? setIsConfirmShow(true) : setIsConfirmShow(false);
+			return !prev;
+		});
+	};
+	const handleAboutEdit = () => {
+		setNewName(null);
+		setUsernameEditable(false);
+		setIsAboutEditable(prev => {
+			prev ? setIsConfirmShow(true) : setIsConfirmShow(false);
+			return !prev;
+		});
+	};
+
+	const handleSave = () => {
+		if (newName !== username || newAbout !== about) {
+			if (newName?.length > 5) {
+				setConformUpdateUsername(true);
+			} else if (newAbout?.length > 0) {
+				setConformUpdateUsername(true);
+			}
+		}
+	};
 
 	return (
 		<SafeAreaView className="h-full bg-zinc-950">
 			<Navbar title={"Profile"} />
-			<ProfileDp />
-			<View className="flex-row items-center h-[8vh] w-[95%] rounded-lg mx-auto border border-zinc-500 ">
-				<TextInput
-					defaultValue={username}
-					ref={usernameRef}
-					editable={false}
-					className="rounded-lg w-[90%] h-full text-white font-pbold tracking-tight px-4"
-				/>
-				<TouchableOpacity
-				   onPress={handleUserNameEdit}
-					className="w-[5vh] h-[5vh] rounded-full flex justify-center items-center">
-					<MaterialIcons name="edit" size={18} color="white" />
-				</TouchableOpacity>
-			</View>
+			<ProfileDp userId={userId} />
+
+			<ProfileEditableItem
+				defaultValue={username}
+				isEditable={UsernameEditable}
+				onChange={setNewName}
+				value={newName}
+				type={'username'}
+				handlePressEdit={handleUsernameEdit}
+			/>
+			<ProfileEditableItem
+				defaultValue={about}
+				placeholder={"vivid_user🥳"}
+				type={'about'}
+				onChange={setNewAbout}
+				value={newAbout}
+				isEditable={isAboutEditable}
+				handlePressEdit={handleAboutEdit}
+			/>
+
+			<ConfirmMessage
+				message={conformMessage}
+				isVisible={isConfirmShow}
+				setIsVisible={setIsConfirmShow}
+				handleSave={handleSave}
+			/>
 		</SafeAreaView>
 	);
 };
 
-export default Profile;
+export default memo(Profile);

@@ -2,23 +2,21 @@ import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../contexts/socketContext.js";
 
 import { ChatContext } from "../../contexts/chatListContext.js";
-import { saveMessagesToCache } from '../../utils/cache.js';
+import { saveMessagesToCache } from "../../utils/cache.js";
 
 const handleChatList = ({ setChatList, chatList, chatRes, chatId }) => {
-	setChatList(prev=>{
-	   existingIndex = chatList?.findIndex(item=> item.chatId === chatId) ;
-	   if(chatList && chatList.length>0 )
-	      newChatDocument = [...chatList];
-	   else newChatDocument = []
-	   if(existingIndex != -1){
-	      updatedChat = newChatDocument.splice(existingIndex, 1) ;
-	      updatedChat[0].lastMessage = chatRes.messages[0];
-	      return [...updatedChat, ...newChatDocument];
-	   }else{
-	      chatRes.lastMessage = chatRes.messages[0];
-	      return [chatRes, ...newChatDocument];
-	   }
-	})
+	setChatList(prev => {
+		existingIndex = chatList?.findIndex(item => item.chatId === chatId);
+		newChatDocument = [...chatList];
+		if (existingIndex != -1) {
+			updatedChat = newChatDocument.splice(existingIndex, 1);
+			updatedChat[0].lastMessage = chatRes.messages[0];
+			return [...updatedChat, ...newChatDocument];
+		} else {
+			chatRes.lastMessage = chatRes.messages[0];
+			return [chatRes, ...newChatDocument];
+		}
+	});
 };
 
 const useSendMessage = ({
@@ -64,30 +62,26 @@ const useSendMessage = ({
 		};
 
 		// here the chat object content two objects sender and receiver (for sending both username and id to the server), but in out app the sender and receiver is not objects, its just userid's. so that the bellow setMessages contains an expression, not chat variable.
-		const newData={
-				chatId,
-				_id: tempId,
-				message: parseMessage,
-				sender: userId,
-				receiver: chatPartnerId,
-				tempId,
-				status: "sent",
-				createdAt: Date.now()
-			}
-		   
-		
-		setMessages(prev => [
-         newData,
-			...prev
-		]);
-		
-		saveMessagesToCache(chatId, [newData])
+		const newData = {
+			chatId,
+			_id: tempId,
+			message: parseMessage,
+			sender: userId,
+			receiver: chatPartnerId,
+			tempId,
+			status: "sent",
+			createdAt: Date.now()
+		};
+
+		setMessages(prev => [newData, ...prev]);
+
 
 		const handleResponse = ({ chatRes, id }) => {
+		   saveMessagesToCache(chatId, [chatRes.messages[0]]);
 			setMessages(prev => {
 				return prev.map(item => {
 					if (item.tempId && item.tempId === id) {
-						return { ...item, ...chatRes.messages[0] };
+						return chatRes.messages[0] // if any bugs found! check the operations made here...
 					}
 					return item;
 				});

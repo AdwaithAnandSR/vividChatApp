@@ -10,6 +10,7 @@ const SettingsLayout = () => {
 		}}>
 			<Stack.Screen name="Settings" />
 			<Stack.Screen name="Profile" />
+			<Stack.Screen name="Chat" />
 		</Stack>
 	   </View>
 	);
