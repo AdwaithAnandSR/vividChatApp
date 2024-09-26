@@ -6,18 +6,16 @@ const useReadMessages = ({ userId, setChatList }) => {
 	const socket = useContext(SocketContext);
 	useEffect(() => {
 		if (!socket || !setChatList || !userId) return;
-		
+
 		const handleResponse = resChatId => {
-			setChatList(prev =>
-				prev?.map(item =>
-					item.chatId === resChatId && item.lastMessage.sender === userId
-						? {
-								...item,
-								lastMessage: { ...item.lastMessage, status: "read" }
-						  }
-						: item
-				)
-			);
+			setChatList(prev => {
+				index = prev.findIndex(item => item.chatId === resChatId);
+				if (index > 0) {
+					if (prev[index].lastMessage.sender === userId)
+						prev[index].lastMessage.status = "read";
+				}
+				return [...prev];
+			});
 		};
 
 		socket.on("messageSeened", handleResponse);

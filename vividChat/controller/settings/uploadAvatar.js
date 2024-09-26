@@ -29,7 +29,8 @@ const filePick = async ({
 		presentationStyle: ImagePicker.UIImagePickerPresentationStyle.FULL_SCREEN,
 		allowsEditing: allowsEditing,
 		aspect: [1, 1],
-		quality: 1
+		quality: 1,
+		legacy: true
 	});
 	if (!result.canceled) {
 		Toast.show({

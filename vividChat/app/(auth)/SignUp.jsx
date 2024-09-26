@@ -64,7 +64,7 @@ const SignUp = () => {
 		if (!validateEmail(email)) return;
 
 		const res = await signUp({ username, email, password });
-		if (res === true) router.push("(tabs)");
+		if (res === true) router.replace("(tabs)");
 		else
 			setMessage({
 				message: res.data.message,

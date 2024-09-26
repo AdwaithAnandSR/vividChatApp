@@ -14,6 +14,10 @@ export const settingsList = [
 	},
 	{
 		key: 4,
+		title: "Account"
+	},
+	{
+		key: 5,
 		title: "About"
 	},
 	

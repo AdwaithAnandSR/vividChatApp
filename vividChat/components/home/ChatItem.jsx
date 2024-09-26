@@ -1,4 +1,4 @@
-import { useEffect, useState, memo, useCallback } from "react";
+import { useEffect, useState, memo, useCallback, useMemo } from "react";
 import { TouchableOpacity, Text, View } from "react-native";
 import { Image } from "expo-image";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,7 +10,7 @@ const blurhash =
 
 import formateTime from "../../utils/formateTime.js";
 
-const ChatItem = memo(({ item, isPressDisabled }) => {
+const ChatItem = ({ item, isPressDisabled }) => {
 	const [userId, setUserId] = useState(null);
 	const [partner, setPartner] = useState(null);
 	const navigation = useNavigation();
@@ -91,12 +91,12 @@ const ChatItem = memo(({ item, isPressDisabled }) => {
 					transition={500}
 				/>
 			</View>
-			<View className="flex gap-1 w-[75%]">
-				<View className="w-screen flex-row ">
+			<View className="flex gap-1 w-[80%]">
+				<View className="w-full flex-row items-center">
 					<Text className="text-white font-rblack tracking-tight capitalize text-[4vw]">
 						{partner.username}
 					</Text>
-					<Text className="text-white font-rblack tracking-tight capitalize text-[4vw]">
+					<Text className="absolute right-0 text-zinc-400 tracking-tight text-[3vw]">
 						{formattedTime}
 					</Text>
 				</View>
@@ -110,15 +110,14 @@ const ChatItem = memo(({ item, isPressDisabled }) => {
 					</Text>
 				</View>
 			</View>
-			{/* Display unread message indicator */}
 			{item.lastMessage.sender !== userId &&
 			item.lastMessage.status !== "read" ? (
-				<View className="w-3 h-3 bg-green-500 rounded-full absolute right-3 flex justify-center items-center">
+				<View className=" w-2 h-2 bg-green-500 rounded-full absolute top-1/2 right-3 flex justify-center items-center">
 					<Text className="text-red-400 text-[4vw]">{""}</Text>
 				</View>
 			) : null}
 		</TouchableOpacity>
 	);
-});
+}
 
 export default ChatItem;

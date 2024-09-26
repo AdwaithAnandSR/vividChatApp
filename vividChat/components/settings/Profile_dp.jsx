@@ -3,14 +3,20 @@ import { View, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from 'expo-constants';
+import axios from 'axios';
 
 import imagePicker from "../../controller/settings/uploadAvatar.js";
 
 const blurhash =
 	"|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
+const SERVER_URL = Constants.expoConfig.serverApi;
+
 const Profile_dp = ({ userId }) => {
 	const [avatar, setAvatar] = useState(null);
+
+	
 	useEffect(() => {
 		fetchAvatar = async () => {
 			const res = await AsyncStorage.getItem("avatar");
@@ -18,6 +24,19 @@ const Profile_dp = ({ userId }) => {
 		};
 		fetchAvatar();
 	}, []);
+	
+	
+	useEffect(() => {
+		const handleFetch = async () => {
+		   if(!userId) return;
+			const res = await axios.post(`${SERVER_URL}/users/getAvatar`, {userId})
+			setAvatar(res)
+			AsyncStorage.setItem("avatar", res);
+		};
+	
+	}, [userId]);
+	
+	
 
 	return (
 		<View className="w-full h-[30vh] flex justify-center items-center ">

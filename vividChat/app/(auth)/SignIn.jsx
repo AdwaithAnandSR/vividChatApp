@@ -46,7 +46,7 @@ const SignIn = () => {
 		if (!validateFields({ username, password })) return;
 
 		const res = await signIn({ username, email, password });
-		if (res === true) router.push("(tabs)");
+		if (res === true) router.replace("(tabs)");
 		else
 			setMessage({
 				message: res.data.message,
