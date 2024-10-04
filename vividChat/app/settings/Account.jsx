@@ -15,7 +15,7 @@ const Account = () => {
 	const handleLogout = async () => {
 		const userId = await AsyncStorage.getItem("userId");
 		if (userId) {
-			axios.post(`${SERVER_URL}/auth/signout`, { userId });
+			//axios.post(`${SERVER_URL}/auth/signout`, { userId });
 		}
 		await AsyncStorage.clear();
 		Toast.show({
@@ -24,7 +24,7 @@ const Account = () => {
 			position: "bottom",
 			swipeable: true
 		});
-		router.replace("(auth)/SignIn");
+		router.replace("(auth)/Auth");
 	};
 
 	return (

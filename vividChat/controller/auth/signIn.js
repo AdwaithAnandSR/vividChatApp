@@ -6,6 +6,9 @@ const handleSignIn = async ({ username, password }) => {
 	const SERVER_API = Constants.expoConfig.extra.serverApi;
 	try {
 		const res = await axios.post(`${SERVER_API}/auth/signin`, {username, password});
+		
+		console.log(res);
+		
 		if(res.status === 200 && res.data.success === true){
 		   await AsyncStorage.setItem('token', res.data.token);
 		   await AsyncStorage.setItem('username', res.data.username);

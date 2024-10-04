@@ -46,7 +46,7 @@ export default function Index() {
 			const userId = await AsyncStorage.getItem("userId");
 			if (serverStatus === 200) {
 				if (userId) router.replace("(tabs)");
-				else router.replace("(auth)/SignIn");
+				else router.replace("(auth)/Auth");
 			}
 		} catch (e) {
 			if (retryCount < 10) {
